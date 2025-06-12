@@ -1,12 +1,16 @@
 import pytest
+
 from app.tasks.services import TaskService
 from app.tasks.schemas import TaskCreate
 from app.tasks.models import TaskStatus, TaskPriority, Task
+
 from app.teams.services import TeamService
 from app.teams.schemas import TeamCreate
+
 from app.employees.services import EmployeeService
 from app.employees.schemas import EmployeeCreate
 
+from tests.fixtures import session
 
 @pytest.fixture
 def setup_team(session):
