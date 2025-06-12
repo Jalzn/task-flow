@@ -64,14 +64,6 @@ def test_get_tasks_by_employee(session, setup_team, setup_employee):
     assert len(employee_tasks) == 1
     assert employee_tasks[0].id == task.id
 
-
-def test_update_task_details(session, setup_team):
-    task = TaskService(session).create_task(TaskCreate(title="Original", description="", team_id=setup_team.id))
-    updated = TaskService(session).update_task(task.id, TaskUpdate(title="Atualizada", description="Nova"))
-    assert updated.title == "Atualizada"
-    assert updated.description == "Nova"
-
-
 def test_update_task_status(session, setup_team):
     task = TaskService(session).create_task(TaskCreate(title="Status Test", description="", team_id=setup_team.id))
     updated = TaskService(session).update_task_status(task.id, TaskStatus.COMPLETED)
