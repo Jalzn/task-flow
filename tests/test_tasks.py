@@ -94,6 +94,11 @@ def test_delete_task(session, setup_team):
 def test_get_task_statistics(session, setup_team):
     TaskService(session).create_task(TaskCreate(title="T1", description="", team_id=setup_team.id, priority=TaskPriority.HIGH))
     TaskService(session).create_task(TaskCreate(title="T2", description="", team_id=setup_team.id, priority=TaskPriority.LOW))
+    TaskService(session).create_task(TaskCreate(title="T3", description="", team_id=setup_team.id, priority=TaskPriority.MEDIUM))
+    TaskService(session).create_task(TaskCreate(title="T4", description="", team_id=setup_team.id, priority=TaskPriority.MEDIUM))
     stats = TaskService(session).get_task_statistics()
     assert isinstance(stats, dict)
-    assert stats.get("total") == 2
+    assert stats.get("total") == 4
+    assert stats.get("Baixa") == 1
+    assert stats.get("Media") == 2
+    assert stats.get("Alta") == 1
