@@ -5,7 +5,7 @@ Um sistema CLI moderno para gerenciamento de tarefas em ambientes empresariais c
 ## Membros do Grupo
 
 - Jalmir de Jesus Ferreira da Silva Junior
-- ...
+- Pedro Henrique de Mattos Gomes
 - ...
 
 ## Explicação do Sistema
