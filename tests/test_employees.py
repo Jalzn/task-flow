@@ -34,16 +34,19 @@ def test_create_employee_invalid_email(mock_validate_email, service: EmployeeSer
 
 
 @patch("app.employees.utils.validate_email", return_value=True)
-def test_create_employee_duplicate_name_or_email(mock_validate_email, service: EmployeeService):
+def test_create_employee_duplicate_name(mock_validate_email, service: EmployeeService):
     schema = EmployeeCreate(name="Jalmir", email="jalmir@email.com", team_id=1)
     service.create_employee(schema)
 
-    # Mesmo nome
     schema_dup_name = EmployeeCreate(name="Jalmir", email="novo@email.com", team_id=1)
     with pytest.raises(Exception, match="Funcionario ja cadastrado"):
         service.create_employee(schema_dup_name)
 
-    # Mesmo email
+@patch("app.employees.utils.validate_email", return_value=True)
+def test_create_employee_duplicate_email(mock_validate_email, service: EmployeeService):
+    schema = EmployeeCreate(name="Jalmir", email="jalmir@email.com", team_id=1)
+    service.create_employee(schema)
+
     schema_dup_email = EmployeeCreate(name="Novo", email="jalmir@email.com", team_id=1)
     with pytest.raises(Exception, match="Funcionario ja cadastrado"):
         service.create_employee(schema_dup_email)
@@ -73,12 +76,18 @@ def test_get_employee_by_id(service: EmployeeService):
         service.get_employee_by_id(999)
 
 
-def test_exists_by_name_and_email(service: EmployeeService):
+def test_exists_by_name(service: EmployeeService):
     assert not service.exists_by_name("X")
+   
+    service.session.add(Employee(name="X", email="x@email.com", team_id=1))
+    service.session.commit()
+
+    assert service.exists_by_name("X")
+
+def test_exists_by_email(service: EmployeeService):
     assert not service.exists_by_email("x@email.com")
 
     service.session.add(Employee(name="X", email="x@email.com", team_id=1))
     service.session.commit()
 
-    assert service.exists_by_name("X")
     assert service.exists_by_email("x@email.com")

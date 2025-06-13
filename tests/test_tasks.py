@@ -41,28 +41,40 @@ def test_create_task_success(session, setup_team):
     assert task.title == "Revisar código"
     assert task.status == TaskStatus.PENDING
 
-def test_schema_missing_title():
+def test_create_task_missing_title():
     with pytest.raises(ValidationError) as exc:
         TaskCreate(description="Desc", team_id=1)
     assert "Field required" in str(exc.value)
 
-def test_schema_default_description_none():
+def test_create_task_name_max_length():
+    long_title = "x"*201
+    with pytest.raises(ValidationError) as exc:
+        TaskCreate(title=long_title, description="Desc", team_id=1)
+    assert "String should have at most 200 characters" in str(exc.value)
+
+def test_create_task_default_description_none():
     schema = TaskCreate(title="T1", team_id=1)
     assert schema.description is None
 
-def test_schema_missing_title():
+def test_create_task_description_max_length():
+    long_description = "x"*1001
     with pytest.raises(ValidationError) as exc:
-        TaskCreate(description="Desc")
+        TaskCreate(title="title", description=long_description, team_id=1)
+    assert "String should have at most 1000 characters" in str(exc.value)
+
+def test_create_task_missing_team_id():
+    with pytest.raises(ValidationError) as exc:
+        TaskCreate(title="T1", description="Desc")
     assert "Field required" in str(exc.value)
 
-def test_schema_default_priority_medium():
+def test_create_task_schema_default_priority_medium():
     schema = TaskCreate(
         title="Teste Prioridade Padrão",
         team_id=1
     )
     assert schema.priority == TaskPriority.MEDIUM
 
-def test_service_default_priority_medium(session, setup_team):
+def test_create_task_service_default_priority_medium(session, setup_team):
     schema = TaskCreate(
         title="Teste Serviço Prioridade Padrão",
         description="",
