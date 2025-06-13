@@ -6,7 +6,7 @@ Um sistema CLI moderno para gerenciamento de tarefas em ambientes empresariais c
 
 - Jalmir de Jesus Ferreira da Silva Junior
 - Pedro Henrique de Mattos Gomes
-- ...
+- Gabriel Arcanjo Campelo Fadoul
 
 ## Explicação do Sistema
 
