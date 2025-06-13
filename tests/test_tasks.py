@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 
 from app.tasks.services import TaskService
 from app.tasks.schemas import TaskCreate
@@ -12,11 +13,15 @@ from app.employees.schemas import EmployeeCreate
 
 from tests.fixtures import session
 
+from typer.testing import CliRunner
+from main import app
+
+runner = CliRunner()
+
 @pytest.fixture
 def setup_team(session):
     team = TeamService(session).create(TeamCreate(name="Alpha", description="Equipe de testes"))
     return team
-
 
 @pytest.fixture
 def setup_employee(session, setup_team):
@@ -36,6 +41,35 @@ def test_create_task_success(session, setup_team):
     assert task.title == "Revisar código"
     assert task.status == TaskStatus.PENDING
 
+def test_schema_missing_title():
+    with pytest.raises(ValidationError) as exc:
+        TaskCreate(description="Desc", team_id=1)
+    assert "Field required" in str(exc.value)
+
+def test_schema_default_description_none():
+    schema = TaskCreate(title="T1", team_id=1)
+    assert schema.description is None
+
+def test_schema_missing_title():
+    with pytest.raises(ValidationError) as exc:
+        TaskCreate(description="Desc")
+    assert "Field required" in str(exc.value)
+
+def test_schema_default_priority_medium():
+    schema = TaskCreate(
+        title="Teste Prioridade Padrão",
+        team_id=1
+    )
+    assert schema.priority == TaskPriority.MEDIUM
+
+def test_service_default_priority_medium(session, setup_team):
+    schema = TaskCreate(
+        title="Teste Serviço Prioridade Padrão",
+        description="",
+        team_id=setup_team.id
+    )
+    task = TaskService(session).create_task(schema)
+    assert task.priority == TaskPriority.MEDIUM
 
 def test_get_all_tasks_returns_created(session, setup_team):
     TaskService(session).create_task(TaskCreate(title="T1", description="D1", team_id=setup_team.id))
