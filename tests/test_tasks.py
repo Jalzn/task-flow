@@ -11,6 +11,8 @@ from app.teams.schemas import TeamCreate
 from app.employees.services import EmployeeService
 from app.employees.schemas import EmployeeCreate
 
+from app.database import create_db_and_tables
+
 from tests.fixtures import session
 
 from typer.testing import CliRunner
@@ -28,6 +30,9 @@ def setup_employee(session, setup_team):
     schema = EmployeeCreate(name="Maria", email="maria@email.com", team_id=setup_team.id)
     return EmployeeService(session).create_employee(schema)
 
+@pytest.fixture(autouse= True)
+def setup_database():
+    create_db_and_tables(test=True)
 
 def test_create_task_success(session, setup_team):
     schema = TaskCreate(
