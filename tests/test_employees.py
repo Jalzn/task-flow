@@ -104,20 +104,29 @@ def test_exists_by_email(service: EmployeeService):
     assert service.exists_by_email("x@email.com")
 
 def test_e2e_create_employee_no_name():
-    result = runner.invoke(app, ['employees', 'create'])
+    result = runner.invoke(app, 
+                           [
+                               "employees", "create"
+                            ])
+    
+    assert result.exit_code != 0
     assert "Missing option '--name" in result.output
 
 def test_e2e_create_employee_no_email():
-    result = runner.invoke(app, ['employees', 'create', '--name', 'Teste'])
+    result = runner.invoke(app, 
+                           [
+                               "employees", "create",
+                               "--name", 'Teste'
+                            ])
     
     assert result.exit_code != 0
     assert "Missing option '--email" in result.output
     
 def teste_e2e_list_employee_empty():
-   result = runner.invoke(app, ['employees', 'list'])
+   result = runner.invoke(app, ["employees", "list"])
    
-   assert result.exit_code != 0
-   assert 'Nenhum funcionário encontrado' in result.output
+   assert result.exit_code == 0
+   assert "Nenhum funcionário encontrado" in result.output
    
 def teste_e2e_list_employee_success():
    runner.invoke(app, [
@@ -126,10 +135,10 @@ def teste_e2e_list_employee_success():
             "--description", "Time de teste1"
         ])
    runner.invoke(app, [
-       'employees', 'create',
-       '--name', 'Test1',
-       '--email', 'test@test.com',
-       '--team', '1'])
-   result = runner.invoke(app, ['employees', 'list'])
-   assert 'Test1' in result.output
+       "employees", "create",
+       "--name", "Test1",
+       "--email", "test@test.com",
+       "--team", "1"])
+   result = runner.invoke(app, ["employees", "list"])
+   assert "Test1" in result.output
     
