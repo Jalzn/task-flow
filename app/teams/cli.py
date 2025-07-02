@@ -34,7 +34,7 @@ def create(
             )
         )
     except Exception as e:
-        Console.print(f"[red]Erro ao criar time: {e}[/red]")
+        console.print(f"[red]Erro ao criar time: {e}[/red]")
 
 
 @app.command("list")
@@ -65,4 +65,4 @@ def list_teams():
         
         console.print(table)
     except Exception as e:
-        Console.print(f"[red]Erro ao criar time: {e}[/red]")
+        console.print(f"[red]Erro ao criar time: {e}[/red]")

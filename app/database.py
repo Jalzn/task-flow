@@ -1,11 +1,17 @@
-from sqlmodel import SQLModel, Session, create_engine
+# app/database.py
+from sqlmodel import create_engine, SQLModel, Session
+from app.config import get_db_url
 
-engine = create_engine("sqlite:///database.db")
+_engine = None
 
-
-def create_db_and_tables():
-    SQLModel.metadata.create_all(engine)
-
+def get_engine():
+    global _engine
+    if _engine is None:
+        _engine = create_engine(get_db_url(), connect_args={"check_same_thread": False})
+    return _engine
 
 def get_session():
-    return Session(engine)
+    return Session(get_engine())
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(get_engine())

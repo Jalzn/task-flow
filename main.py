@@ -4,6 +4,7 @@ from rich.console import Console
 from rich.panel import Panel
 
 from app import employees, tasks, teams
+from app.config import set_db_url
 from app.database import create_db_and_tables
 
 console = Console()
@@ -21,8 +22,12 @@ app.add_typer(tasks.cli.app, name="tasks")
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
-    version: bool = typer.Option(False, "--version", "-v", help="Mostrar versão")
+    version: bool = typer.Option(False, "--version", "-v", help="Mostrar versão"),
+    db_url: str = typer.Option(None, "--db-url", help="URL do banco de dados a ser usado")
 ):
+    if db_url:
+        set_db_url(db_url)
+
     if version:
         console.print("TODO CLI v1.0.0")
         return

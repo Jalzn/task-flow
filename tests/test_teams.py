@@ -1,5 +1,9 @@
 import pytest
 from pydantic import ValidationError
+import typer
+from typer.testing import CliRunner
+
+from main import app
 
 from app.teams.models import Team
 from app.teams.schemas import TeamCreate, TeamResponse
@@ -49,3 +53,17 @@ def test_get_all_teams(team_service: TeamService):
 def test_get_all_teams_empty(team_service: TeamService):
     teams = team_service.get_all()
     assert teams == []
+
+def test_e2e_create_team():
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        [
+            "--db-url", "sqlite://",
+            "teams", "create",
+            "--name", "Teste",
+            "--description", "Time de teste"
+        ]
+    )
+    assert result.exit_code == 0
+    assert "Teste" in result.output
