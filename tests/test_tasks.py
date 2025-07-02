@@ -147,16 +147,16 @@ def test_get_task_statistics(session, setup_team):
     assert stats.get("Alta") == 1
 
 def test_e2e_create_task_missing_title_argument():
-    result = runner.invoke(app, ["tasks", "create", "--title"])
-    assert "Option '--title' requires an argument" in result.output
+    result = runner.invoke(app, ["tasks", "create"])
+    assert "Missing option '--title" in result.output
 
 def test_e2e_create_task_missing_description_argument():
-    result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description"])
-    assert "Option '--description' requires an argument" in result.output
+    result = runner.invoke(app, ["tasks", "create", "--title", "Task1"])
+    assert "Missing option '--description" in result.output
 
 def test_e2e_create_task_missing_team_id_argument():
-    result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description", "Description1", "--team-id"])
-    assert "Option '--team-id' requires an argument" in result.output
+    result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description", "Description1"])
+    assert "Missing option '--team-id" in result.output
 
 def test_e2e_create_task_sucess():
     result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description", "Description1", "--team-id","1"])
