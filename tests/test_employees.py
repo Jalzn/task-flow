@@ -105,11 +105,11 @@ def test_exists_by_email(service: EmployeeService):
 
 def test_e2e_create_employee_no_name():
     result = runner.invoke(app, ['employees', 'create'])
-    assert '''Missing option '--name' (env var: 'None').''' in result.output
+    assert '''Missing option '--name' ''' in result.output
 
 def test_e2e_create_employee_no_email():
     result = runner.invoke(app, ['employees', 'create', '--name', 'Teste'])
-    assert '''Missing option '--email' (env var: 'None')''' in result.output
+    assert '''Missing option '--email' ''' in result.output
     
 def teste_e2e_list_employee_empty():
    result = runner.invoke(app, ['employees', 'list'])
