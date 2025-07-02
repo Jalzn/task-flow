@@ -3,6 +3,7 @@ from pydantic import ValidationError
 import typer
 from typer.testing import CliRunner
 
+from app.database import create_db_and_tables
 from main import app
 
 from app.teams.models import Team
@@ -14,6 +15,11 @@ from tests.fixtures import session
 @pytest.fixture
 def team_service(session):
     return TeamService(session)
+
+@pytest.fixture(autouse= True)
+def setup_database():
+    create_db_and_tables(test=True)
+
 
 def test_create_team_success(team_service: TeamService):
     schema = TeamCreate(name="Team A", description="Time de desenvolvimento")
@@ -59,7 +65,6 @@ def test_e2e_create_team():
     result = runner.invoke(
         app,
         [
-            "--db-url", "sqlite://",
             "teams", "create",
             "--name", "Teste",
             "--description", "Time de teste"
@@ -67,3 +72,27 @@ def test_e2e_create_team():
     )
     assert result.exit_code == 0
     assert "Teste" in result.output
+
+def test_e2e_create_team_with_missing_name():
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        [
+            "teams", "create",
+            "--description", "Time de teste"
+        ]
+    )
+    assert result.exit_code != 0
+    assert "Missing option '--name" in result.output
+
+
+def test_e2e_create_team_with_missing_name():
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        [
+            "teams", "list",
+        ]
+    )
+    assert result.exit_code == 0
+    assert "ID" in result.output
