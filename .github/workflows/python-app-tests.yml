@@ -36,7 +36,7 @@ jobs:
 
     - name: Run tests
       env:
-        NO_COLOR: '1'
+        NO_COLOR: '0'
       run: |
         pytest
         
