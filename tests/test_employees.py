@@ -4,14 +4,25 @@ from app.employees.models import Employee
 from app.employees.schemas import EmployeeCreate
 from app.employees.services import EmployeeService
 
+from app.database import create_db_and_tables
+
 from unittest.mock import patch
+
+from typer.testing import CliRunner
+from main import app
 
 from tests.fixtures import session
 
 
+runner = CliRunner()
+
 @pytest.fixture
 def service(session):
     return EmployeeService(session)
+
+@pytest.fixture(autouse= True)
+def setup_database():
+    create_db_and_tables(test=True)
 
 
 @patch("app.employees.utils.validate_email", return_value=True)
@@ -91,3 +102,30 @@ def test_exists_by_email(service: EmployeeService):
     service.session.commit()
 
     assert service.exists_by_email("x@email.com")
+
+def test_e2e_create_employee_no_name():
+    result = runner.invoke(app, ['employees', 'create'])
+    assert '''Missing option '--name' (env var: 'None').''' in result.output
+
+def test_e2e_create_employee_no_email():
+    result = runner.invoke(app, ['employees', 'create', '--name', 'Teste'])
+    assert '''Missing option '--email' (env var: 'None')''' in result.output
+    
+def teste_e2e_list_employee_empty():
+   result = runner.invoke(app, ['employees', 'list'])
+   assert 'Nenhum funcionário encontrado' in result.output
+   
+def teste_e2e_list_employee_success():
+   runner.invoke(app, [
+            "teams", "create",
+            "--name", "Teste1",
+            "--description", "Time de teste1"
+        ])
+   runner.invoke(app, [
+       'employees', 'create',
+       '--name', 'Test1',
+       '--email', 'test@test.com',
+       '--team', '1'])
+   result = runner.invoke(app, ['employees', 'list'])
+   assert 'Test1' in result.output
+    
