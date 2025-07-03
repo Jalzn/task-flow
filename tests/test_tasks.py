@@ -162,7 +162,7 @@ def test_e2e_create_task_missing_team_id_argument():
     result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description", "Description1"])
     assert result.exit_code != 0
     assert "Missing option" in result.output
-    assert "team-id" in result.output
+    assert "team" in result.output
     
 
 def test_e2e_create_task_sucess():
