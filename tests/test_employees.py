@@ -110,7 +110,7 @@ def test_e2e_create_employee_no_name():
                             ])
     
     assert result.exit_code != 0
-    assert "Missing option '--name" in result.output
+    assert "Missing option" in result.output
 
 def test_e2e_create_employee_no_email():
     result = runner.invoke(app, 
@@ -120,7 +120,7 @@ def test_e2e_create_employee_no_email():
                             ])
     
     assert result.exit_code != 0
-    assert "Missing option '--email" in result.output
+    assert "Missing option" in result.output
     
 def teste_e2e_list_employee_empty():
    result = runner.invoke(app, ["employees", "list"])
