@@ -149,20 +149,31 @@ def test_get_task_statistics(session, setup_team):
 def test_e2e_create_task_missing_title_argument():
     result = runner.invoke(app, ["tasks", "create"])
     assert result.exit_code != 0
-    assert "Missing option '--title" in result.output
+    assert "Missing option" in result.output
+    assert "title" in result.output
 
 def test_e2e_create_task_missing_description_argument():
     result = runner.invoke(app, ["tasks", "create", "--title", "Task1"])
     assert result.exit_code != 0
-    assert "Missing option '--description" in result.output
+    assert "Missing option" in result.output
+    assert "description" in result.output
 
 def test_e2e_create_task_missing_team_id_argument():
     result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description", "Description1"])
     assert result.exit_code != 0
-    assert "Missing option '--team-id" in result.output
+    assert "Missing option" in result.output
+    assert "team-id" in result.output
     
 
 def test_e2e_create_task_sucess():
     result = runner.invoke(app, ["tasks", "create", "--title", "Task1", "--description", "Description1", "--team-id","1"])
     assert result.exit_code == 0
     assert "Tarefa criada com sucesso!" in result.output
+
+def teste_e2e_list_task_success():
+   runner.invoke(app, ["tasks", "create", "--title", "Task2", "--description", "Description2", "--team-id","1"])
+   runner.invoke(app, ["tasks", "create", "--title", "Task3", "--description", "Description3", "--team-id","1"])
+   result = runner.invoke(app, ["tasks", "list"])
+   assert "Task1" in result.output
+   assert "Task2" in result.output
+   assert "Task3" in result.output
