@@ -170,6 +170,7 @@ def test_e2e_create_task_sucess():
     assert result.exit_code == 0
     assert "Tarefa criada com sucesso!" in result.output
 
+
 def teste_e2e_list_task_success():
    runner.invoke(app, ["tasks", "create", "--title", "Task2", "--description", "Description2", "--team-id","1"])
    runner.invoke(app, ["tasks", "create", "--title", "Task3", "--description", "Description3", "--team-id","1"])
